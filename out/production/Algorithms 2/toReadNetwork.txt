@@ -1,0 +1,2 @@
+aleppo -> homs(30) , daraa(24)
+dama -> aleppo(38) , lattakia(248)
