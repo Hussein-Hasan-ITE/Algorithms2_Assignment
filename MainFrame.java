@@ -7,6 +7,7 @@ import java.util.HashMap;
 public class MainFrame extends JFrame {
 
     private Network network;
+    private Network backupNetwork;
     private GraphPanel graphPanel;
 
     public MainFrame() {
@@ -16,9 +17,10 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Buttons panel
         JPanel buttonPanel = new JPanel();
-        JButton loadButton = new JButton("Load");
+
+        JButton loadButton = new JButton("Start");
+        JButton reloadButton = new JButton("Reload");
         JButton addStationButton = new JButton("Add Station");
         JButton addRailwayButton = new JButton("Add Railway");
         JButton deleteStationButton = new JButton("Delete Station");
@@ -26,6 +28,7 @@ public class MainFrame extends JFrame {
         JButton clearButton = new JButton("Clear");
 
         buttonPanel.add(loadButton);
+        buttonPanel.add(reloadButton);
         buttonPanel.add(addStationButton);
         buttonPanel.add(addRailwayButton);
         buttonPanel.add(deleteStationButton);
@@ -34,19 +37,29 @@ public class MainFrame extends JFrame {
 
         add(buttonPanel, BorderLayout.NORTH);
 
-        // Graph panel
         graphPanel = new GraphPanel();
         add(graphPanel, BorderLayout.CENTER);
 
-        // LOAD
+        // LOAD from file
         loadButton.addActionListener(e -> {
             try {
                 HashMap<String, ArrayList<Pair<String, Integer>>> data = W_RFiles.importFromFile();
                 network = new Network(data);
+                backupNetwork = new Network(data); // keep a copy
                 graphPanel.setNetwork(network);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error loading file: " + ex.getMessage());
             }
+        });
+
+        // RELOAD last updated state
+        reloadButton.addActionListener(e -> {
+            if (backupNetwork == null) {
+                JOptionPane.showMessageDialog(this, "No saved graph state to reload.");
+                return;
+            }
+            network = new Network(backupNetwork.toExport());
+            graphPanel.setNetwork(network);
         });
 
         // ADD STATION
@@ -60,13 +73,7 @@ public class MainFrame extends JFrame {
             if (name == null || name.trim().isEmpty()) return;
 
             network.addStation(name.trim());
-
-            try {
-                network.exportNetworkToFile();
-                graphPanel.setNetwork(network);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error exporting file: " + ex.getMessage());
-            }
+            saveCurrentState();
         });
 
         // ADD RAILWAY
@@ -88,9 +95,7 @@ public class MainFrame extends JFrame {
             try {
                 int distance = Integer.parseInt(distanceStr.trim());
                 network.addRailWay(from.trim(), to.trim(), distance);
-
-                network.exportNetworkToFile();
-                graphPanel.setNetwork(network);
+                saveCurrentState();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Distance must be a number.");
             } catch (Exception ex) {
@@ -109,18 +114,12 @@ public class MainFrame extends JFrame {
             if (name == null || name.trim().isEmpty()) return;
 
             boolean removed = network.removeStation(name.trim());
-
             if (!removed) {
                 JOptionPane.showMessageDialog(this, "Station not found.");
                 return;
             }
 
-            try {
-                network.exportNetworkToFile();
-                graphPanel.setNetwork(network);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error exporting file: " + ex.getMessage());
-            }
+            saveCurrentState();
         });
 
         // DELETE RAILWAY
@@ -137,26 +136,29 @@ public class MainFrame extends JFrame {
             if (to == null || to.trim().isEmpty()) return;
 
             boolean removed = network.removeRailWay(from.trim(), to.trim());
-
             if (!removed) {
-                JOptionPane.showMessageDialog(this, "Could not delete railway. Check station names.");
+                JOptionPane.showMessageDialog(this, "Could not delete railway.");
                 return;
             }
 
-            try {
-                network.exportNetworkToFile();
-                graphPanel.setNetwork(network);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Error exporting file: " + ex.getMessage());
-            }
+            saveCurrentState();
         });
 
-        // CLEAR
+        // CLEAR only the drawing
         clearButton.addActionListener(e -> {
-            network = null;
             graphPanel.setNetwork(null);
         });
 
         setVisible(true);
+    }
+
+    private void saveCurrentState() {
+        try {
+            network.exportNetworkToFile(); // write to toWriteNetwork.txt
+            backupNetwork = new Network(network.toExport()); // keep latest saved copy
+            graphPanel.setNetwork(network);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error saving network: " + ex.getMessage());
+        }
     }
 }
