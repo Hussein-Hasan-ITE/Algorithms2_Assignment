@@ -1,3 +1,5 @@
 aleppo -> homs(30) , daraa(24)
-lolo -> aleppo(20)
-dama -> lattakia(248) , aleppo(38)
+daraa -> idlib(23)
+idlib -> homs(23)
+homs -> lattakia(34)
+dama -> aleppo(38) , lattakia(248) , daraa(10)

@@ -1,5 +1,4 @@
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Network {
@@ -203,7 +202,60 @@ public class Network {
 			toReturn.addFirst(current.name);
 			current = previous.get(current);
 		}
-		return Objects.equals(toReturn.getFirst(), from) ? toReturn : new ArrayList<String>();
+		return Objects.equals(toReturn.getFirst(), from) ? toReturn : new ArrayList<>();
 	}
 
+	public boolean hasCycle(){
+		Set<Station> all = new HashSet<>(stations.values());
+		Set<Station> visiting = new HashSet<>();
+		Set<Station> visited = new HashSet<>();
+
+		while(!all.isEmpty()){
+			var current = all.iterator().next();
+			if (hasCycle(current, all, visiting, visited)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean hasCycle(Station current , Set<Station> all ,
+					 Set<Station> visiting , Set<Station> visited){
+		all.remove(current);
+		visiting.add(current);
+
+		for(var station : current.getRailWays().keySet()){
+			if (visited.contains(station)) {
+				continue;
+			}
+			if (visiting.contains(station)) {
+				return true;
+			}
+
+			if (hasCycle(station, all, visiting, visited)) {
+				return true;
+			}
+		}
+
+		visiting.remove(current);
+		visited.add(current);
+
+		return false;
+	}
+
+	public ArrayList<Pair<String , Integer>> returnSorted(){
+		PriorityQueue<Pair<String , Integer>> sortedStations = new PriorityQueue<>(
+				Comparator.comparing(conn -> conn.second)
+		);
+
+		for(var station : stations.values()){
+			sortedStations.add(new Pair<>(station.name , station.getRailWays().size()));
+		}
+		ArrayList<Pair<String , Integer>> toReturn = new ArrayList<>();
+		while(!sortedStations.isEmpty()){
+			toReturn.add(sortedStations.remove());
+		}
+		return toReturn;
+	}
 }

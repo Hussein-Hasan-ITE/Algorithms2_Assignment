@@ -1,2 +1,6 @@
 aleppo -> homs(30) , daraa(24)
 dama -> aleppo(38) , lattakia(248)
+daraa -> dama(38) , dair al-zour(38)
+dair al-zour -> aleppo(23) , tartous(23)
+tartous -> daraa(26) , lattakia(23)
+hasaka -> daraa(183) , homs(23) , lattakia(27)
