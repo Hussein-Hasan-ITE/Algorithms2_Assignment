@@ -26,6 +26,8 @@ public class MainFrame extends JFrame {
         JButton deleteStationButton = new JButton("Delete Station");
         JButton deleteRailwayButton = new JButton("Delete Railway");
         JButton clearButton = new JButton("Clear");
+        JButton shortestPathButton = new JButton("Shortest Path");
+
 
         buttonPanel.add(loadButton);
         buttonPanel.add(reloadButton);
@@ -34,6 +36,7 @@ public class MainFrame extends JFrame {
         buttonPanel.add(deleteStationButton);
         buttonPanel.add(deleteRailwayButton);
         buttonPanel.add(clearButton);
+        buttonPanel.add(shortestPathButton);
 
         add(buttonPanel, BorderLayout.NORTH);
 
@@ -150,7 +153,35 @@ public class MainFrame extends JFrame {
         });
 
         setVisible(true);
+        shortestPathButton.addActionListener(e -> {
+            if (network == null) {
+                JOptionPane.showMessageDialog(this, "Load a network first.");
+                return;
+            }
+
+            String from = JOptionPane.showInputDialog(this, "Enter source station:");
+            if (from == null || from.trim().isEmpty()) return;
+
+            String to = JOptionPane.showInputDialog(this, "Enter destination station:");
+            if (to == null || to.trim().isEmpty()) return;
+
+            ArrayList<String> path = network.getShortestPath(from.trim(), to.trim());
+            int distance = network.getShortestDistance(from.trim(), to.trim());
+
+            if (path.isEmpty() || distance == -1) {
+                JOptionPane.showMessageDialog(this, "No path found between these stations.");
+                return;
+            }
+
+            StringBuilder result = new StringBuilder();
+            result.append("Shortest path:\n");
+            result.append(String.join(" -> ", path));
+            result.append("\n\nDistance: ").append(distance);
+
+            JOptionPane.showMessageDialog(this, result.toString());
+        });
     }
+
 
     private void saveCurrentState() {
         try {
