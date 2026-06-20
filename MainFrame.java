@@ -6,6 +6,12 @@ import java.util.HashMap;
 
 public class MainFrame extends JFrame {
 
+    private static final Color BG = new Color(20, 20, 20);
+    private static final Color PANEL_BG = new Color(30, 30, 30);
+    private static final Color RED = new Color(180, 20, 20);
+    private static final Color DARK_RED = new Color(120, 0, 0);
+    private static final Color TEXT = Color.WHITE;
+
     private Network network;
     private Network backupNetwork;
     private GraphPanel graphPanel;
@@ -16,6 +22,7 @@ public class MainFrame extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        getContentPane().setBackground(BG);
 
         JPanel buttonPanel = new JPanel();
 
@@ -27,6 +34,9 @@ public class MainFrame extends JFrame {
         JButton deleteRailwayButton = new JButton("Delete Railway");
         JButton clearButton = new JButton("Clear");
         JButton shortestPathButton = new JButton("Shortest Path");
+        JButton cycleButton = new JButton("Detect Cycle");
+        JButton sortButton = new JButton("Sort Stations");
+
 
 
         buttonPanel.add(loadButton);
@@ -35,8 +45,11 @@ public class MainFrame extends JFrame {
         buttonPanel.add(addRailwayButton);
         buttonPanel.add(deleteStationButton);
         buttonPanel.add(deleteRailwayButton);
-        buttonPanel.add(clearButton);
+        buttonPanel.add(cycleButton);
         buttonPanel.add(shortestPathButton);
+        buttonPanel.add(sortButton);
+        buttonPanel.add(clearButton);
+
 
         add(buttonPanel, BorderLayout.NORTH);
 
@@ -104,6 +117,36 @@ public class MainFrame extends JFrame {
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
             }
+        });
+
+        cycleButton.addActionListener(e -> {
+            if (network == null) {
+                JOptionPane.showMessageDialog(this, "Load a network first.");
+                return;
+            }
+
+            boolean hasCycle = network.hasCycle();
+            JOptionPane.showMessageDialog(this,
+                    hasCycle ? "The graph has a cycle." : "The graph has no cycle.");
+        });
+
+        sortButton.addActionListener(e -> {
+            if (network == null) {
+                JOptionPane.showMessageDialog(this, "Load a network first.");
+                return;
+            }
+
+            ArrayList<Pair<String, Integer>> sorted = network.returnSorted();
+
+            StringBuilder result = new StringBuilder("Stations sorted by number of railways:\n\n");
+            for (Pair<String, Integer> p : sorted) {
+                result.append(p.first)
+                        .append(" -> ")
+                        .append(p.second)
+                        .append("\n");
+            }
+
+            JOptionPane.showMessageDialog(this, result.toString());
         });
 
         // DELETE STATION
