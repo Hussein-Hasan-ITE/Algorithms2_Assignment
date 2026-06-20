@@ -17,14 +17,17 @@ public class MainFrame extends JFrame {
     private GraphPanel graphPanel;
 
     public MainFrame() {
-        setTitle("Graph Network");
+        setTitle("Graph Simulation");
         setSize(1000, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         getContentPane().setBackground(BG);
+        setIconImage(new ImageIcon("C:\\Users\\LOQ\\Downloads\\Telegram Desktop\\photo_2026-06-20_21-22-02.jpg").getImage());
+
 
         JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(PANEL_BG);
 
         JButton loadButton = new JButton("Start");
         JButton reloadButton = new JButton("Reload");
@@ -37,7 +40,16 @@ public class MainFrame extends JFrame {
         JButton cycleButton = new JButton("Detect Cycle");
         JButton sortButton = new JButton("Sort Stations");
 
-
+        styleButton(loadButton);
+        styleButton(reloadButton);
+        styleButton(addStationButton);
+        styleButton(addRailwayButton);
+        styleButton(deleteStationButton);
+        styleButton(deleteRailwayButton);
+        styleButton(clearButton);
+        styleButton(shortestPathButton);
+        styleButton(cycleButton);
+        styleButton(sortButton);
 
         buttonPanel.add(loadButton);
         buttonPanel.add(reloadButton);
@@ -49,6 +61,9 @@ public class MainFrame extends JFrame {
         buttonPanel.add(shortestPathButton);
         buttonPanel.add(sortButton);
         buttonPanel.add(clearButton);
+
+
+
 
 
         add(buttonPanel, BorderLayout.NORTH);
@@ -223,6 +238,12 @@ public class MainFrame extends JFrame {
 
             JOptionPane.showMessageDialog(this, result.toString());
         });
+    }
+    private void styleButton(JButton button) {
+        button.setBackground(RED);
+        button.setForeground(TEXT);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(DARK_RED, 1));
     }
 
 

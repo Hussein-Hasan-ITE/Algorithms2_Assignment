@@ -6,7 +6,18 @@ import java.util.List;
 
 public class GraphPanel extends JPanel {
 
+    private static final Color BG = new Color(20, 20, 20);
+    private static final Color EDGE = new Color(180, 20, 20);
+    private static final Color NODE = new Color(180, 20, 20);
+    private static final Color NODE_BORDER = new Color(255, 80, 80);
+    private static final Color TEXT = Color.WHITE;
+
     private Network network;
+
+    public GraphPanel() {
+        setBackground(BG);
+        setOpaque(true);
+    }
 
     public void setNetwork(Network network) {
         this.network = network;
@@ -17,14 +28,18 @@ public class GraphPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (network == null) {
-            g.setColor(Color.BLACK);
-            g.drawString("No network loaded.", 20, 20);
-            return;
-        }
-
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // background
+        g2.setColor(BG);
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        if (network == null) {
+            g2.setColor(TEXT);
+            g2.drawString("No network loaded.", 20, 20);
+            return;
+        }
 
         HashMap<String, ArrayList<Pair<String, Integer>>> data = network.toExport();
         List<String> stations = new ArrayList<>(data.keySet());
@@ -52,7 +67,7 @@ public class GraphPanel extends JPanel {
         int nodeRadius = 20;
 
         // draw edges with arrows
-        g2.setColor(Color.GRAY);
+        g2.setColor(EDGE);
         for (String from : stations) {
             Point p1 = positions.get(from);
 
@@ -72,19 +87,15 @@ public class GraphPanel extends JPanel {
                 int endX = (int) (p2.x - nodeRadius * dx / length);
                 int endY = (int) (p2.y - nodeRadius * dy / length);
 
-                // line
                 g2.drawLine(startX, startY, endX, endY);
-
-                // arrow head
                 drawArrowHead(g2, startX, startY, endX, endY);
 
-                // weight label
                 int midX = (startX + endX) / 2;
                 int midY = (startY + endY) / 2;
 
-                g2.setColor(Color.RED);
+                g2.setColor(TEXT);
                 g2.drawString(String.valueOf(edge.second), midX, midY);
-                g2.setColor(Color.GRAY);
+                g2.setColor(EDGE);
             }
         }
 
@@ -92,15 +103,16 @@ public class GraphPanel extends JPanel {
         for (String station : stations) {
             Point p = positions.get(station);
 
-            g2.setColor(Color.CYAN);
+            g2.setColor(NODE);
             g2.fillOval(p.x - nodeRadius, p.y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
 
-            g2.setColor(Color.BLACK);
+            g2.setColor(NODE_BORDER);
             g2.drawOval(p.x - nodeRadius, p.y - nodeRadius, nodeRadius * 2, nodeRadius * 2);
 
             FontMetrics fm = g2.getFontMetrics();
             int textWidth = fm.stringWidth(station);
 
+            g2.setColor(TEXT);
             g2.drawString(station, p.x - textWidth / 2, p.y + nodeRadius + 15);
         }
     }
@@ -118,6 +130,7 @@ public class GraphPanel extends JPanel {
         int[] xPoints = {x2, xArrow1, xArrow2};
         int[] yPoints = {y2, yArrow1, yArrow2};
 
+        g2.setColor(EDGE);
         g2.fillPolygon(xPoints, yPoints, 3);
     }
 }
