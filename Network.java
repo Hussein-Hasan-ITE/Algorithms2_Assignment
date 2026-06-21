@@ -258,4 +258,23 @@ public class Network {
 		}
 		return toReturn;
 	}
+
+	public ArrayList<String> getStationNames() {
+		return new ArrayList<>(stations.keySet());
+	}
+
+	public ArrayList<String> getNeighbors(String stationName) {
+		ArrayList<String> neighbors = new ArrayList<>();
+		Station station = stations.get(stationName);
+
+		if (station == null) {
+			return neighbors;
+		}
+
+		for (RailWay railWay : station.getRailWays().values()) {
+			neighbors.add(railWay.to.name + " (" + railWay.distance + ")");
+		}
+
+		return neighbors;
+	}
 }

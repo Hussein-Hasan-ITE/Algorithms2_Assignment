@@ -7,9 +7,9 @@ import java.util.List;
 public class GraphPanel extends JPanel {
 
     private static final Color BG = new Color(20, 20, 20);
-    private static final Color EDGE = new Color(180, 20, 20);
-    private static final Color NODE = new Color(180, 20, 20);
-    private static final Color NODE_BORDER = new Color(255, 80, 80);
+    private static final Color EDGE = new Color(20, 105, 180);
+    private static final Color NODE = new Color(20, 65, 180);
+    private static final Color NODE_BORDER = new Color(80, 255, 255);
     private static final Color TEXT = Color.WHITE;
 
     private Network network;
