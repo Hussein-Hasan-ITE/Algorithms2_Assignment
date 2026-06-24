@@ -125,10 +125,8 @@ public class MainFrame extends JFrame {
 
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // update destinations when current station changes
         currentStationCombo.addActionListener(e -> updateDestinationCombo());
 
-        // LOAD from file
         loadButton.addActionListener(e -> {
             try {
                 HashMap<String, ArrayList<Pair<String, Integer>>> data = W_RFiles.importFromFile();
@@ -142,7 +140,6 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // RELOAD last updated state
         reloadButton.addActionListener(e -> {
             if (backupNetwork == null) {
                 JOptionPane.showMessageDialog(this, "No saved graph state to reload.");
@@ -154,7 +151,6 @@ public class MainFrame extends JFrame {
             infoArea.setText("Graph reloaded.");
         });
 
-        // ADD STATION
         addStationButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -168,7 +164,6 @@ public class MainFrame extends JFrame {
             saveCurrentState("Station added: " + name.trim());
         });
 
-        // ADD RAILWAY
         addRailwayButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -195,7 +190,6 @@ public class MainFrame extends JFrame {
             }
         });
 
-        // DELETE STATION
         deleteStationButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -214,7 +208,6 @@ public class MainFrame extends JFrame {
             saveCurrentState("Station deleted: " + name.trim());
         });
 
-        // DELETE RAILWAY
         deleteRailwayButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -236,13 +229,11 @@ public class MainFrame extends JFrame {
             saveCurrentState("Railway deleted: " + from.trim() + " -> " + to.trim());
         });
 
-        // CLEAR only the drawing
         clearButton.addActionListener(e -> {
             graphPanel.setNetwork(null);
             infoArea.setText("Drawing cleared.");
         });
 
-        // SHORTEST PATH
         shortestPathButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -271,7 +262,6 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this, result.toString());
         });
 
-        // CYCLE DETECTION
         cycleButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -283,7 +273,6 @@ public class MainFrame extends JFrame {
                     hasCycle ? "The graph has a cycle." : "The graph has no cycle.");
         });
 
-        // SORT STATIONS
         sortButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");
@@ -299,7 +288,6 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this, result.toString());
         });
 
-        // TRAVERSE
         traverseButton.addActionListener(e -> {
             if (network == null) {
                 JOptionPane.showMessageDialog(this, "Load a network first.");

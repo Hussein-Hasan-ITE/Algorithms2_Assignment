@@ -30,8 +30,6 @@ public class GraphPanel extends JPanel {
 
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // background
         g2.setColor(BG);
         g2.fillRect(0, 0, getWidth(), getHeight());
 
@@ -53,7 +51,6 @@ public class GraphPanel extends JPanel {
 
         HashMap<String, Point> positions = new HashMap<>();
 
-        // place stations in a circle
         for (int i = 0; i < stations.size(); i++) {
             String station = stations.get(i);
             double angle = 2 * Math.PI * i / stations.size();
@@ -66,7 +63,6 @@ public class GraphPanel extends JPanel {
 
         int nodeRadius = 20;
 
-        // draw edges with arrows
         g2.setColor(EDGE);
         for (String from : stations) {
             Point p1 = positions.get(from);
@@ -90,16 +86,15 @@ public class GraphPanel extends JPanel {
                 g2.drawLine(startX, startY, endX, endY);
                 drawArrowHead(g2, startX, startY, endX, endY);
 
-                int midX = (startX + endX) / 2;
-                int midY = (startY + endY) / 2;
+                int labelX = startX + (endX - startX) / 3;
+                int labelY = startY + (endY - startY) / 3;
 
                 g2.setColor(TEXT);
-                g2.drawString(String.valueOf(edge.second), midX, midY);
+                g2.drawString(String.valueOf(edge.second), labelX, labelY);
                 g2.setColor(EDGE);
             }
         }
 
-        // draw nodes
         for (String station : stations) {
             Point p = positions.get(station);
 
